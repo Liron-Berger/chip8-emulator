@@ -34,5 +34,5 @@ fn main() {
 
     let mut emulator = Emulator::new();
     emulator.load_program(program);
-    println!("{:?}", emulator.cpu);
+    emulator.emulate_program();
 }

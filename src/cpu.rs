@@ -1,16 +1,25 @@
 pub struct Cpu {
-    pub registers: [u8; 16],
-    pub memory: [u8; 4096],
-    
+    pub registers: [u8; Cpu::REGISTERS_SIZE],
+    pub ram: [u8; Cpu::RAM_SIZE],
+    pub stack: [u16; Cpu::STACK_SIZE],    
+    pub pc: usize,
+    pub sp: u8,
 }
 
 impl Cpu {
+    pub const RAM_SIZE: usize = 0x1000;
+    pub const REGISTERS_SIZE: usize = 0x10;
+    pub const STACK_SIZE: usize = 0x10;
+
     pub const PROGRAM_OFFSET: usize = 0x200;
 
     pub fn new() -> Cpu {
         Cpu {
-            registers: [0; 16],
-            memory: [0; 4096],
+            registers: [0; Cpu::REGISTERS_SIZE],
+            ram: [0; Cpu::RAM_SIZE],
+            stack: [0; Cpu::STACK_SIZE],
+            pc: 0x200,
+            sp: 0,
         }
     }
 }
