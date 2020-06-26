@@ -1,11 +1,12 @@
 mod cpu;
+mod emulator;
 
 use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::Read;
 
-pub use cpu::Cpu;
+use emulator::Emulator;
 
 fn parse_args(args: &Vec<String>) -> &String {
     match args.len() {
@@ -31,8 +32,7 @@ fn main() {
     let file_name: &String = parse_args(&args);
     let program = read_program(file_name);
 
-    let mut chip = Cpu::new();
-    chip.load_program(program);
-    println!("{:?}", chip);
-
+    let mut emulator = Emulator::new();
+    emulator.load_program(program);
+    println!("{:?}", emulator.cpu);
 }
