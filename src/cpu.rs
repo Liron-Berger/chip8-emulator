@@ -22,6 +22,14 @@ impl Cpu {
             sp: 0,
         }
     }
+
+    pub fn run_opcode(&mut self, opcode: u16) {
+        self.pc += 2;
+        if opcode != 0 {
+            
+            println!("{} Running opcode {:#x?}", self.pc, opcode);
+        }
+    }
 }
 
 impl std::fmt::Debug for Cpu {

@@ -23,12 +23,9 @@ impl Emulator {
     }
 
     pub fn emulate_program(mut self) {
-        for i in (Cpu::PROGRAM_OFFSET..Cpu::RAM_SIZE).step_by(2) {
+        for _ in (Cpu::PROGRAM_OFFSET..Cpu::RAM_SIZE).step_by(2) {
             let opcode = self.get_opcode();
-            self.cpu.pc += 2;
-            if opcode != 0 {
-                println!("{} Running opcode {:#x?}", &self.cpu.pc, opcode);
-            }
+            self.cpu.run_opcode(opcode);
         }
     }
 }
