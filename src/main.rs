@@ -1,5 +1,6 @@
 mod cpu;
 mod emulator;
+mod instructions;
 
 use std::env;
 use std::fs;

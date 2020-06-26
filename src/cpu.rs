@@ -1,3 +1,6 @@
+use crate::instructions::get_opcode_func;
+
+
 pub struct Cpu {
     pub registers: [u8; Cpu::REGISTERS_SIZE],
     pub ram: [u8; Cpu::RAM_SIZE],
@@ -13,6 +16,7 @@ impl Cpu {
 
     pub const PROGRAM_OFFSET: usize = 0x200;
 
+
     pub fn new() -> Cpu {
         Cpu {
             registers: [0; Cpu::REGISTERS_SIZE],
@@ -25,11 +29,12 @@ impl Cpu {
 
     pub fn run_opcode(&mut self, opcode: u16) {
         self.pc += 2;
-        if opcode != 0 {
-            
-            println!("{} Running opcode {:#x?}", self.pc, opcode);
-        }
+        type Opcode = fn(&mut Cpu, u16);
+        let func: Opcode = get_opcode_func(opcode);
+
+        func(self, opcode);
     }
+
 }
 
 impl std::fmt::Debug for Cpu {
