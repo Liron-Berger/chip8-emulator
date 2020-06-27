@@ -4,6 +4,7 @@ extern crate gl;
 use sdl2::render::Canvas;
 use sdl2::video::Window;
 use sdl2::EventPump;
+use sdl2::event::Event;
 
 use crate::emulator::Emulator;
 
@@ -58,7 +59,7 @@ impl Video {
         'running: loop {
             for event in self.event_pump.poll_iter() {
                 match event {
-                    sdl2::event::Event::Quit {..} => break 'running,
+                    Event::Quit {..} => break 'running,
                     _ => {},
                 }
             }

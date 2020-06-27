@@ -22,6 +22,7 @@ pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
         0xb => op_bnnn,
         0xc => op_cxnn,
         0xd => op_dxyn,
+        0xe => op_e(opcode),
         _ => default,
     }
 }
@@ -46,6 +47,14 @@ fn op_8(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
         0x7 => op_8xy7,
         0xe => op_8xye,
         _ => default
+    }
+}
+
+fn op_e(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
+    match opcode.opcode & 0xff {
+        0x9e => op_ex9e,
+        0xa1 => op_exa1,
+        _ => default,
     }
 }
 
@@ -182,16 +191,16 @@ fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
         }
         y += 1;
     }
-    println!("{}", cpu.display);
+    // println!("{}", cpu.display);
 }
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_ex9e(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_ex9e(cpu: &mut Cpu, opcode: Opcode) {
+    println!("Checking key is down on {}", cpu.get_v(opcode.x));
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_exa1(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_exa1(cpu: &mut Cpu, opcode: Opcode) {
+    println!("Checking key is up on {}", cpu.get_v(opcode.x));
+}
 
 #[allow(unused_variables)]
 #[allow(dead_code)]
