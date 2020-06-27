@@ -23,6 +23,7 @@ pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
         0xc => op_cxnn,
         0xd => op_dxyn,
         0xe => op_e(opcode),
+        0xf => op_f(opcode),
         _ => default,
     }
 }
@@ -54,6 +55,21 @@ fn op_e(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     match opcode.opcode & 0xff {
         0x9e => op_ex9e,
         0xa1 => op_exa1,
+        _ => default,
+    }
+}
+
+fn op_f(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
+    match opcode.opcode & 0xff {
+        0x07 => op_fx07,
+        0x0a => op_fx0a,
+        0x15 => op_fx15,
+        0x18 => op_fx18,
+        0x1e => op_fx1e,
+        0x29 => op_fx29,
+        0x33 => op_fx33,
+        0x55 => op_fx55,
+        0x65 => op_fx65,
         _ => default,
     }
 }
@@ -210,12 +226,19 @@ fn op_exa1(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_fx07(cpu: &mut Cpu, opcode: Opcode) {
-    
+    println!("DELAY");
+    cpu.set_v(opcode.x, cpu.dt);
 }
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_fx0a(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_fx0a(cpu: &mut Cpu, opcode: Opcode) {
+    println!("WAITING FOR KEYPRESS");
+    let key = cpu.check_keypress();
+    if key == -1 {
+        cpu.wait_key = true;
+    }
+    cpu.wait_key = false;
+    cpu.set_v(opcode.x, key as u8);
+}
 
 #[allow(unused_variables)]
 #[allow(dead_code)]

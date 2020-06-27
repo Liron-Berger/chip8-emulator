@@ -12,6 +12,9 @@ pub struct Cpu {
     pub i: u16,
     pub display: Display,
     pub keyboard: [u16; Cpu::KEYBOARD_SIZE],
+    pub dt: u8,
+    pub st: u8,
+    pub wait_key: bool,
 }
 
 impl Cpu {
@@ -37,11 +40,14 @@ impl Cpu {
             i: 0,
             display: Display::new(),
             keyboard: [0; Cpu::KEYBOARD_SIZE],
+            dt: 0,
+            st: 0,
+            wait_key: false,
         }
     }
 
     pub fn run_opcode(&mut self, opcode: u16) -> bool {
-        if opcode != 0 {
+        if opcode >> 12 == 0xf {
         println!("{:x}", opcode);
         }
         let op = Opcode::new(opcode);
@@ -49,7 +55,9 @@ impl Cpu {
         let func: OpcodeFunc = get_opcode_func(&op);
         
         func(self, op);
-        self.advance_pc();
+        if !self.wait_key {
+            self.advance_pc();
+        }
         self.pc == Cpu::RAM_SIZE
     }
 
@@ -67,6 +75,16 @@ impl Cpu {
 
     pub fn set_v(&mut self, index: u8, value: u8) {
         self.registers[index as usize] = value;
+    }
+
+    pub fn check_keypress(&self) -> i16 {
+        for i in 0..15 {
+            if self.keyboard[i] != 0 {
+                println!("{:?}", self.keyboard);
+                return i as i16;
+            }
+        }
+        -1
     }
 
     pub fn get_u8_lsb(value: u8) -> u8 {
