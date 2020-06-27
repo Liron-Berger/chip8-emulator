@@ -19,7 +19,7 @@ impl Emulator {
     }
 
     fn get_opcode(&self) -> u16 {
-       (self.cpu.ram[self.cpu.pc] as u16) << 8 | self.cpu.ram[self.cpu.pc + 1] as u16
+       (self.cpu.ram[self.cpu.pc as usize] as u16) << 8 | self.cpu.ram[(self.cpu.pc + 1) as usize] as u16
     }
 
     pub fn update(&mut self) -> bool {

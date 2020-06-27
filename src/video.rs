@@ -71,10 +71,10 @@ impl Video {
     }
 
     fn render(&mut self) {
-        unsafe {
-            gl::ClearColor(0.6, 0.0, 0.8, 1.0);
-            gl::Clear(gl::COLOR_BUFFER_BIT);
-        }
+        // unsafe {
+        //     gl::ClearColor(0.6, 0.0, 0.8, 1.0);
+        //     gl::Clear(gl::COLOR_BUFFER_BIT);
+        // }
         self.canvas.present();
     }
 
