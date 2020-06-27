@@ -50,13 +50,16 @@ impl Cpu {
 
     pub fn run_opcode(&mut self, opcode: u16) -> bool {
         use std::{thread, time};
-        thread::sleep(time::Duration::from_millis(1000));
+        thread::sleep(time::Duration::from_millis(200));
 
         let op = Opcode::new(opcode);
         type OpcodeFunc = fn(&mut Cpu, Opcode);
         let func: OpcodeFunc = get_opcode_func(&op);
          
         func(self, op);
+        if self.dt > 0 {
+            self.dt -= 1;
+        }
         println!("{:x}, {:?}", opcode, self);
         self.pc == Cpu::RAM_SIZE
     }
@@ -122,6 +125,6 @@ impl Cpu {
 
 impl std::fmt::Debug for Cpu {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{:x}\n\tregisters: {:?}\n\tstack: {:?}\n\tkeyboard: {:?}\n\tsp: {:x}\n\tI: {:x}", self.pc, self.registers, self.stack, self.keyboard, self.sp, self.i)
+        write!(f, "{:x}\n\tregisters: {:?}\n\tstack: {:?}\n\tkeyboard: {:?}\n\tsp: {:x}\n\tI: {:x}\n\tdt: {:x}", self.pc, self.registers, self.stack, self.keyboard, self.sp, self.i, self.dt)
     }
 }
