@@ -1,20 +1,23 @@
-use std::vec::Vec;
 use std::fmt;
 
 
 pub struct Display {
-    pixels: Vec<Vec<bool>>,
+    pixels: [[u8; Display::WIDTH]; Display::HEIGHT],
 }
 
 
 impl Display {
-    const WIDTH: usize = 64;
-    const HEIGHT: usize = 32;
+    pub const WIDTH: usize = 64;
+    pub const HEIGHT: usize = 32;
 
     pub fn new() -> Display {
         Display {
-            pixels: vec![vec![false; Display::WIDTH]; Display::HEIGHT],
+            pixels: [[0; Display::WIDTH]; Display::HEIGHT],
         }
+    }
+
+    pub fn draw_pixel(&mut self, x: u8, y: u8, pixel: u8) {
+        self.pixels[y as usize][x as usize] = pixel;
     }
 }
 

@@ -4,7 +4,7 @@ use rand::Rng;
 
 use crate::cpu::Cpu;
 use crate::opcode::Opcode;
-
+use crate::display::Display;
 
 pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     match (opcode.opcode & 0xf000) >> 12 {
@@ -21,6 +21,7 @@ pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
         0xa => op_annn,
         0xb => op_bnnn,
         0xc => op_cxnn,
+        0xd => op_dxyn,
         _ => default,
     }
 }
@@ -155,7 +156,8 @@ fn op_9xy0(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_annn(cpu: &mut Cpu, opcode: Opcode) {
-   cpu.i = opcode.nnn; 
+    println!("Set to: {}", opcode.nnn);
+    cpu.i = opcode.nnn; 
 }
 
 fn op_bnnn(cpu: &mut Cpu, opcode: Opcode) {
@@ -167,9 +169,21 @@ fn op_cxnn(cpu: &mut Cpu, opcode: Opcode) {
     cpu.set_v(opcode.x, (rng.gen_range(0, 0xff) as u8) & opcode.kk);
 }
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
+    let (mut x, mut y) = (cpu.get_v(opcode.x), cpu.get_v(opcode.y));
+
+    for i in cpu.i..cpu.i + opcode.n as u16 {
+        let mut byte = cpu.ram[i as usize];
+        for j in 0..7 {
+            if ((x + j) as usize) < Display::HEIGHT {
+                cpu.display.draw_pixel(x + j, y, Cpu::get_u8_msb(byte));
+            }
+            byte = byte << 1;
+        }
+        y += 1;
+    }
+    println!("{}", cpu.display);
+}
 
 #[allow(unused_variables)]
 #[allow(dead_code)]
