@@ -9,7 +9,7 @@ use crate::display::Display;
 pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     match (opcode.opcode & 0xf000) >> 12 {
         0x0 => op_0(opcode),
-        0x1 => default,
+        0x1 => op_1nnn,
         0x2 => op_2nnn,
         0x3 => op_3xnn,
         0x4 => op_4xnn,
@@ -94,8 +94,6 @@ fn op_1nnn(cpu: &mut Cpu, opcode: Opcode) {
     cpu.pc = opcode.nnn;
 }
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
 fn op_2nnn(cpu: &mut Cpu, opcode: Opcode) {
     cpu.sp += 1;
     cpu.stack[cpu.sp as usize] = cpu.pc;
@@ -195,7 +193,7 @@ fn op_cxnn(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
-    let (mut x, mut y) = (cpu.get_v(opcode.x), cpu.get_v(opcode.y));
+    let (x, mut y) = (cpu.get_v(opcode.x), cpu.get_v(opcode.y));
 
     for i in cpu.i..cpu.i + opcode.n as u16 {
         let mut byte = cpu.ram[i as usize];
@@ -207,7 +205,7 @@ fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
         }
         y += 1;
     }
-    // println!("{}", cpu.display);
+    println!("{}", cpu.display);
 }
 
 fn op_ex9e(cpu: &mut Cpu, opcode: Opcode) {
@@ -240,33 +238,43 @@ fn op_fx0a(cpu: &mut Cpu, opcode: Opcode) {
     cpu.set_v(opcode.x, key as u8);
 }
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_fx15(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_fx15(cpu: &mut Cpu, opcode: Opcode) {
+    println!("SETTING DELAY");
+    cpu.dt = cpu.get_v(opcode.x);
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_fx18(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_fx18(cpu: &mut Cpu, opcode: Opcode) {
+    println!("SETTING SOUND");
+    cpu.st = cpu.get_v(opcode.x);
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_fx1e(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_fx1e(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.i += cpu.get_v(opcode.x) as u16
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_fx29(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_fx29(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.i = (cpu.get_v(opcode.x) * 5) as u16;
+    println!("DRAWING SPRITE {}", cpu.get_v(opcode.x));
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_fx33(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_fx33(cpu: &mut Cpu, opcode: Opcode) {
+    let vx =  cpu.get_v(opcode.x);
+    cpu.ram[cpu.i as usize] = vx / 100;
+    cpu.ram[(cpu.i + 1) as usize] = (vx % 100) / 10;
+    cpu.ram[(cpu.i + 2) as usize] = vx % 10;
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_fx55(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_fx55(cpu: &mut Cpu, opcode: Opcode) {
+    for i in 0..opcode.x {
+        cpu.ram[(cpu.i + (i as u16)) as usize] = cpu.get_v(opcode.x);
+    }
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_fx65(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_fx65(cpu: &mut Cpu, opcode: Opcode) {
+    for i in 0..opcode.x {
+        cpu.set_v(opcode.x, cpu.ram[(cpu.i + (i as u16)) as usize]);
+    }
+}
 
 #[allow(unused_variables)]
 #[allow(dead_code)]
