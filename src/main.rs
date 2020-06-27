@@ -1,6 +1,7 @@
 mod cpu;
 mod emulator;
 mod instructions;
+mod video;
 
 use std::env;
 use std::fs;
@@ -29,6 +30,7 @@ fn read_program(file_name: &String) -> Vec<u8> {
 }
 
 fn main() {
+    let video = video::Window::new();
     let args: Vec<String> = env::args().collect();
     let file_name: &String = parse_args(&args);
     let program = read_program(file_name);
