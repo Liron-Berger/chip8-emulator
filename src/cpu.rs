@@ -122,9 +122,6 @@ impl Cpu {
 
 impl std::fmt::Debug for Cpu {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        for i in 0..self.ram.len() {
-            print!("{}, ", self.ram[i]);
-        }
         write!(f, "{:x}\n\tregisters: {:?}\n\tstack: {:?}\n\tkeyboard: {:?}\n\tsp: {:x}\n\tI: {:x}", self.pc, self.registers, self.stack, self.keyboard, self.sp, self.i)
     }
 }

@@ -97,7 +97,7 @@ fn op_1nnn(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_2nnn(cpu: &mut Cpu, opcode: Opcode) {
     cpu.sp += 1;
-    cpu.stack[cpu.sp as usize] = cpu.pc + 2;
+    cpu.stack[(cpu.sp - 1) as usize] = cpu.pc + 2;
     cpu.pc = opcode.nnn;
 }
 
@@ -210,20 +210,19 @@ fn op_cxnn(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
-    let (x, mut y) = (cpu.get_v(opcode.x), cpu.get_v(opcode.y));
+    let (mut x, mut y) = (cpu.get_v(opcode.x), cpu.get_v(opcode.y));
 
     for i in cpu.i..cpu.i + opcode.n as u16 {
-        println!("{:x}, {:x}, {:x}", i, cpu.ram[i as usize], i as usize);
         let mut byte = cpu.ram[i as usize];
-        for j in 0..7 {
-            if ((x + j) as usize) < Display::HEIGHT {
-                cpu.registers[Cpu::VF as usize] |= cpu.display.draw_pixel(x + j, y, Cpu::get_u8_msb(byte));
+        for j in 0..8 {
+            if ((x + j) as usize) < Display::WIDTH {
+                cpu.registers[Cpu::VF as usize] |= cpu.display.draw_pixel(x + j - 1, y, Cpu::get_u8_msb(byte));
             }
             byte = byte << 1;
         }
         y += 1;
     }
-    // println!("{}", cpu.display);
+    println!("{}", cpu.display);
     cpu.advance_pc();
 }
 
