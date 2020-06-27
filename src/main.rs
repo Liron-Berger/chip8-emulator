@@ -30,12 +30,12 @@ fn read_program(file_name: &String) -> Vec<u8> {
 }
 
 fn main() {
-    let video = video::Window::new();
     let args: Vec<String> = env::args().collect();
     let file_name: &String = parse_args(&args);
     let program = read_program(file_name);
-
     let mut emulator = Emulator::new();
     emulator.load_program(program);
-    emulator.emulate_program();
+
+    let mut video = video::Window::new("Chip8", 700, 500, emulator);
+    video.run();
 }

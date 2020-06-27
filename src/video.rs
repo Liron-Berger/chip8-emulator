@@ -1,46 +1,53 @@
 extern crate sdl2;
+use crate::emulator::Emulator;
 
 pub struct Window {
-    // sdl: sdl2::Sdl,
-    // window: sdl2::video::Window,
-    event_pump: sdl2::EventPump,
+    title: String,
+    width: u32,
+    height: u32,
+    emulator: Emulator,
 }
 
 impl Window {
-    pub fn new() -> Window {
+    pub fn new(title: &str, width: u32, height: u32, emulator: Emulator) -> Window {
+        Window {
+            title: title.to_string(),
+            width: width,
+            height: height,
+            emulator: emulator
+        }
+    }
+
+    pub fn run(&mut self) {
         let sdl = sdl2::init().unwrap();
         let video_subsystem = sdl.video().unwrap();
         let window = video_subsystem
-            .window("Game", 900, 700)
+            .window(&self.title, self.width, self.height)
             .resizable()
             .build()
             .unwrap();
      
         let mut event_pump = sdl.event_pump().unwrap();
-        Window {
-            // sdl: sdl,
-            // window: window,
-            event_pump: event_pump,
-        }
-    }
 
-    pub fn run(&mut self) {
         'running: loop {
-            for event in self.event_pump.poll_iter() {
+            for event in event_pump.poll_iter() {
                 match event {
                     sdl2::event::Event::Quit {..} => break 'running,
                     _ => {},
                 }
             }
+
+            // self.render();
+            // self.update();
         }
     }
 
-    pub fn render() {
+    fn render(&self) {
         
     }
 
-    pub fn update() {
-        
+    fn update(&mut self) {
+        // self.emulator.emulate_program();
     }
 }
 
