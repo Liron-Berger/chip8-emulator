@@ -40,17 +40,16 @@ impl Cpu {
         }
     }
 
-    pub fn empty_keyboard(&mut self) {
-        self.keyboard = [0; Cpu::KEYBOARD_SIZE]
-    }
-
     pub fn run_opcode(&mut self, opcode: u16) -> bool {
-        // self.pc += 2;
+        if opcode != 0 {
+        println!("{:x}", opcode);
+        }
         let op = Opcode::new(opcode);
         type OpcodeFunc = fn(&mut Cpu, Opcode);
         let func: OpcodeFunc = get_opcode_func(&op);
         
         func(self, op);
+        self.advance_pc();
         self.pc == Cpu::RAM_SIZE
     }
 

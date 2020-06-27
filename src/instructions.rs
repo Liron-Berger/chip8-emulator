@@ -195,17 +195,23 @@ fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_ex9e(cpu: &mut Cpu, opcode: Opcode) {
+    if cpu.keyboard[cpu.get_v(opcode.x) as usize] == 1 {
+        cpu.advance_pc();
+    }
     println!("Checking key is down on {}", cpu.get_v(opcode.x));
 
 }
 
 fn op_exa1(cpu: &mut Cpu, opcode: Opcode) {
+    if cpu.keyboard[cpu.get_v(opcode.x) as usize] == 0 {
+        cpu.advance_pc();
+    }
     println!("Checking key is up on {}", cpu.get_v(opcode.x));
 }
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_fx07(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_fx07(cpu: &mut Cpu, opcode: Opcode) {
+    
+}
 
 #[allow(unused_variables)]
 #[allow(dead_code)]

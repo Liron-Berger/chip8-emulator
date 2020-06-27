@@ -112,12 +112,6 @@ impl Video {
     }
 
     fn render(&mut self) {
-        for i in 0..15 {
-            if self.emulator.cpu.keyboard[i] != 0 {
-                println!("{:?}", self.emulator.cpu.keyboard);
-                break;
-            }
-        }
         self.canvas.present();
     }
 
