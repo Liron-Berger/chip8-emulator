@@ -86,8 +86,8 @@ fn op_00e0(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_00ee(cpu: &mut Cpu, _: Opcode) {
     if cpu.sp > 0 {
-        cpu.pc = cpu.stack[cpu.sp as usize];
         cpu.sp -= 1;
+        cpu.pc = cpu.stack[cpu.sp as usize];
     }
 }
 
