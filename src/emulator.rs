@@ -22,10 +22,8 @@ impl Emulator {
        (self.cpu.ram[self.cpu.pc] as u16) << 8 | self.cpu.ram[self.cpu.pc + 1] as u16
     }
 
-    pub fn emulate_program(mut self) {
-        for _ in (Cpu::PROGRAM_OFFSET..Cpu::RAM_SIZE).step_by(2) {
-            let opcode = self.get_opcode();
-            self.cpu.run_opcode(opcode);
-        }
+    pub fn update(&mut self) -> bool {
+        let opcode = self.get_opcode();
+        self.cpu.run_opcode(opcode)
     }
 }

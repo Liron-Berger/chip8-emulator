@@ -47,6 +47,7 @@ impl Video {
             .index(find_sdl_gl_driver().unwrap())
             .build()
             .unwrap();
+
         gl::load_with(|name| video_subsystem.gl_get_proc_address(name) as *const _);
         canvas.window().gl_set_context_to_current().unwrap(); 
         let event_pump = sdl.event_pump().unwrap();
@@ -63,7 +64,9 @@ impl Video {
             }
 
             self.render();
-            self.update();
+            if self.update() {
+                break 'running
+            }
         }
     }
 
@@ -75,8 +78,8 @@ impl Video {
         self.canvas.present();
     }
 
-    fn update(&mut self) {
-        self.emulator.emulate_program();
+    fn update(&mut self) -> bool {
+        self.emulator.update()
     }
 }
 

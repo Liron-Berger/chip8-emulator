@@ -27,12 +27,13 @@ impl Cpu {
         }
     }
 
-    pub fn run_opcode(&mut self, opcode: u16) {
+    pub fn run_opcode(&mut self, opcode: u16) -> bool {
         self.pc += 2;
         type Opcode = fn(&mut Cpu, u16);
         let func: Opcode = get_opcode_func(opcode);
 
         func(self, opcode);
+        self.pc == Cpu::RAM_SIZE
     }
 
 }

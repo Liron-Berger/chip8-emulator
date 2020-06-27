@@ -2,7 +2,8 @@ use crate::cpu::Cpu;
 
 pub fn get_opcode_func(opcode: u16) -> fn(&mut Cpu, u16) {
     match opcode {
-        0x00EE => op_ooee,
+        0x00E0 => op_00e0,
+        0x00EE => op_00ee,
         _ => default,
     }
 }
@@ -11,13 +12,13 @@ pub fn get_opcode_func(opcode: u16) -> fn(&mut Cpu, u16) {
 #[allow(dead_code)]
 fn op_0nnn(cpu: &mut Cpu, opcode: u16) {}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_00e0(cpu: &mut Cpu, opcode: u16) {}
+fn op_00e0(cpu: &mut Cpu, opcode: u16) {
+   println!("Clear the display"); 
+}
 
 #[allow(unused_variables)]
 #[allow(dead_code)]
-fn op_ooee(cpu: &mut Cpu, _: u16) {
+fn op_00ee(cpu: &mut Cpu, _: u16) {
     println!("{} Return from subroutine!", cpu.pc);
 }
 
