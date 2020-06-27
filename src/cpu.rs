@@ -1,4 +1,5 @@
 use crate::instructions::get_opcode_func;
+use crate::opcode::Opcode;
 
 #[derive(Copy, Clone)]
 pub struct Cpu {
@@ -29,10 +30,11 @@ impl Cpu {
 
     pub fn run_opcode(&mut self, opcode: u16) -> bool {
         self.pc += 2;
-        type Opcode = fn(&mut Cpu, u16);
-        let func: Opcode = get_opcode_func(opcode);
-
-        func(self, opcode);
+        let op = Opcode::new(opcode);
+        type OpcodeFunc = fn(&mut Cpu, Opcode);
+        let func: OpcodeFunc = get_opcode_func(&op);
+        
+        func(self, op);
         self.pc == Cpu::RAM_SIZE
     }
 

@@ -2,6 +2,7 @@ mod cpu;
 mod emulator;
 mod instructions;
 mod video;
+mod opcode;
 
 use std::env;
 use std::fs;
