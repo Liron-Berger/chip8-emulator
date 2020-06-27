@@ -2,10 +2,12 @@ extern crate sdl2;
 extern crate gl;
 
 use sdl2::render::Canvas;
+use sdl2::video::Window;
+use sdl2::EventPump;
 
 use crate::emulator::Emulator;
 
-pub struct Window {
+pub struct Video {
     title: String,
     width: u32,
     height: u32,
@@ -21,17 +23,17 @@ fn find_sdl_gl_driver() -> Option<u32> {
     None
 }
 
-impl Window {
-    pub fn new(title: &str, width: u32, height: u32, emulator: Emulator) -> Window {
-        Window {
+impl Video {
+    pub fn new(title: &str, width: u32, height: u32, emulator: Emulator) -> Video {
+        Video {
             title: title.to_string(),
             width: width,
             height: height,
-            emulator: emulator
+            emulator: emulator,
         }
     }
 
-    pub fn run(&mut self) {
+    pub fn initialize_window(&self) -> (Canvas<Window>, EventPump) {
         let sdl = sdl2::init().unwrap();
         let video_subsystem = sdl.video().unwrap();
 
@@ -48,7 +50,11 @@ impl Window {
         gl::load_with(|name| video_subsystem.gl_get_proc_address(name) as *const _);
         canvas.window().gl_set_context_to_current(); 
         let mut event_pump = sdl.event_pump().unwrap();
+        (canvas, event_pump)
+    }
 
+    pub fn run(&mut self) {
+        let (mut canvas, mut event_pump) = self.initialize_window();
         'running: loop {
             for event in event_pump.poll_iter() {
                 match event {

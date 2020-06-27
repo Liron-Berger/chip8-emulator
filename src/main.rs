@@ -36,6 +36,6 @@ fn main() {
     let mut emulator = Emulator::new();
     emulator.load_program(program);
 
-    let mut video = video::Window::new("Chip8", 700, 500, emulator);
+    let mut video = video::Video::new("Chip8", 700, 500, emulator);
     video.run();
 }
