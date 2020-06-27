@@ -8,6 +8,7 @@ pub struct Cpu {
     pub stack: [u16; Cpu::STACK_SIZE],    
     pub pc: u16,
     pub sp: u8,
+    pub i: u16,
 }
 
 impl Cpu {
@@ -15,6 +16,7 @@ impl Cpu {
     pub const REGISTERS_SIZE: usize = 0x10;
     pub const STACK_SIZE: usize = 0x10;
     pub const VF: u8 = 0xf;
+    pub const V0: u8 = 0x0;
 
     pub const PROGRAM_OFFSET: usize = 0x200;
 
@@ -27,6 +29,7 @@ impl Cpu {
             stack: [0; Cpu::STACK_SIZE],
             pc: 0x200,
             sp: 0,
+            i: 0,
         }
     }
 

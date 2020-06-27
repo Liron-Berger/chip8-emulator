@@ -15,6 +15,7 @@ pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
         0x7 => op_7xnn,
         0x8 => op_8(opcode),
         0x9 => op_9xy0,
+        0xa => op_annn,
         _ => default,
     }
 }
@@ -154,12 +155,10 @@ fn op_9xy0(cpu: &mut Cpu, opcode: Opcode) {
     }
 }
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_annn(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_annn(cpu: &mut Cpu, opcode: Opcode) {
+   cpu.i = opcode.nnn; 
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
 fn op_bnnn(cpu: &mut Cpu, opcode: Opcode) {}
 
 #[allow(unused_variables)]
