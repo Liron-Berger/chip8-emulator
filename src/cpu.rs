@@ -14,8 +14,10 @@ impl Cpu {
     pub const RAM_SIZE: u16 = 0x1000;
     pub const REGISTERS_SIZE: usize = 0x10;
     pub const STACK_SIZE: usize = 0x10;
+    pub const VF: u8 = 0xf;
 
     pub const PROGRAM_OFFSET: usize = 0x200;
+
 
 
     pub fn new() -> Cpu {
@@ -38,6 +40,21 @@ impl Cpu {
         self.pc == Cpu::RAM_SIZE
     }
 
+    pub fn get_v(&self, index: u8) -> u8 {
+        self.registers[index as usize]
+    }
+
+    pub fn set_v(&mut self, index: u8, value: u8) {
+        self.registers[index as usize] = value;
+    }
+
+    pub fn get_u8_lsb(value: u8) -> u8 {
+        value << 7 >> 7
+    }
+
+    pub fn get_u8_msb(value: u8) -> u8 {
+        value >> 7
+    }
 }
 
 impl std::fmt::Debug for Cpu {

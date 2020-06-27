@@ -41,6 +41,7 @@ fn op_8(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     }
 }
 
+#[allow(unused_variables)]
 fn op_9(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     op_3xnn
 }
@@ -50,6 +51,7 @@ fn op_9(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
 #[allow(dead_code)]
 fn op_0nnn(cpu: &mut Cpu, opcode: Opcode) {}
 
+#[allow(unused_variables)]
 fn op_00e0(cpu: &mut Cpu, opcode: Opcode) {
    println!("Clear the display"); 
 }
@@ -103,45 +105,54 @@ fn op_6xnn(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_7xnn(cpu: &mut Cpu, opcode: Opcode) {
     println!("7xnn {} {}", opcode.x, opcode.kk);
-    cpu.registers[opcode.x as usize].wrapping_add(opcode.kk);
+    cpu.set_v(opcode.x, cpu.get_v(opcode.x).wrapping_add(opcode.kk));
 }
 
 fn op_8xy0(cpu: &mut Cpu, opcode: Opcode) {
-    println!("8xy0 {} {}", opcode.x, opcode.y);
-    cpu.registers[opcode.x as usize] = cpu.registers[opcode.y as usize];
+    cpu.set_v(opcode.x, cpu.get_v(opcode.y));
 }
 
 fn op_8xy1(cpu: &mut Cpu, opcode: Opcode) {
-    
+    cpu.set_v(opcode.x, cpu.get_v(opcode.x) | cpu.get_v(opcode.y));
 }
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_8xy2(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_8xy2(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.set_v(opcode.x, cpu.get_v(opcode.x) & cpu.get_v(opcode.y));
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_8xy3(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_8xy3(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.set_v(opcode.x, cpu.get_v(opcode.x) ^ cpu.get_v(opcode.y));
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_8xy4(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_8xy4(cpu: &mut Cpu, opcode: Opcode) {
+    let (vx, vf) = cpu.get_v(opcode.x).overflowing_add(cpu.get_v(opcode.y));
+    cpu.set_v(opcode.x, vx);
+    cpu.set_v(Cpu::VF, vf as u8);
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_8xy5(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_8xy5(cpu: &mut Cpu, opcode: Opcode) {
+    let (vx, vf) = cpu.get_v(opcode.x).overflowing_sub(cpu.get_v(opcode.y));
+    cpu.set_v(opcode.x, vx);
+    cpu.set_v(Cpu::VF, vf as u8);
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_8xy6(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_8xy6(cpu: &mut Cpu, opcode: Opcode) {
+    let vx = cpu.get_v(opcode.x);
+    cpu.set_v(opcode.x, vx >> 1);
+    cpu.set_v(Cpu::VF, Cpu::get_u8_lsb(vx));
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_8xy7(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_8xy7(cpu: &mut Cpu, opcode: Opcode) {
+    let (vx, vf) = cpu.get_v(opcode.y).overflowing_sub(cpu.get_v(opcode.x));
+    cpu.set_v(opcode.x, vx);
+    cpu.set_v(Cpu::VF, vf as u8);
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_8xye(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_8xye(cpu: &mut Cpu, opcode: Opcode) {
+    let vx = cpu.get_v(opcode.x);
+    cpu.set_v(opcode.x, vx << 1);
+    cpu.set_v(Cpu::VF, Cpu::get_u8_msb(vx));
+}
 
 #[allow(unused_variables)]
 #[allow(dead_code)]
