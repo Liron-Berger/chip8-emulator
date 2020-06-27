@@ -2,7 +2,7 @@ use std::fmt;
 
 
 pub struct Display {
-    pixels: [[u8; Display::WIDTH]; Display::HEIGHT],
+    pub pixels: [[u8; Display::WIDTH]; Display::HEIGHT],
 }
 
 

@@ -6,8 +6,11 @@ use sdl2::video::Window;
 use sdl2::EventPump;
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
+use sdl2::rect::Rect;
+use sdl2::pixels::Color;
 
 use crate::emulator::Emulator;
+use crate::display::Display;
 
 pub struct Video {
     emulator: Emulator,
@@ -25,8 +28,10 @@ fn find_sdl_gl_driver() -> Option<u32> {
 }
 
 impl Video {
-    pub fn new(title: &str, width: u32, height: u32, emulator: Emulator) -> Video {
-        let (canvas, event_pump) = Video::initialize_window(title, width, height);
+    const PIXEL_FACTOR: u32 = 16;
+
+    pub fn new(title: &str, emulator: Emulator) -> Video {
+        let (canvas, event_pump) = Video::initialize_window(title);
 
         Video {
             emulator: emulator,
@@ -35,12 +40,12 @@ impl Video {
         }
     }
 
-    pub fn initialize_window(title: &str, width: u32, height: u32) -> (Canvas<Window>, EventPump) {
+    pub fn initialize_window(title: &str) -> (Canvas<Window>, EventPump) {
         let sdl = sdl2::init().unwrap();
         let video_subsystem = sdl.video().unwrap();
 
         let window = video_subsystem
-            .window(title, width, height)
+            .window(title, (Display::WIDTH as u32) * Video::PIXEL_FACTOR, (Display::HEIGHT as u32) * Video::PIXEL_FACTOR)
             .opengl()
             .resizable()
             .build()
@@ -112,7 +117,24 @@ impl Video {
     }
 
     fn render(&mut self) {
+        for (i, row) in self.emulator.cpu.display.pixels.clone().iter().enumerate() {
+            for (j, val) in row.iter().enumerate() {
+                if *val == 1 {
+                    self.fill_rect(i as i32, j as i32, 255, 210, 0);
+                } else {
+                    self.fill_rect(i as i32, j as i32, 0, 0, 0);
+                }
+            }
+        }
+
+        self.canvas.set_draw_color(Color::RGB(255, 210, 0));
+        self.canvas.fill_rect(Rect::new(10, 10, 10, 10));
         self.canvas.present();
+    }
+
+    fn fill_rect(&mut self, i: i32, j: i32, r: u8, g: u8, b: u8) {
+        self.canvas.set_draw_color(Color::RGB(r, g, b));
+        self.canvas.fill_rect(Rect::new(j * Video::PIXEL_FACTOR as i32, i * Video::PIXEL_FACTOR as i32, Video::PIXEL_FACTOR, Video::PIXEL_FACTOR));
     }
 
     fn update(&mut self) -> bool {

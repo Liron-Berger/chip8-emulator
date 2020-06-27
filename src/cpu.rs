@@ -50,7 +50,7 @@ impl Cpu {
 
     pub fn run_opcode(&mut self, opcode: u16) -> bool {
         use std::{thread, time};
-        thread::sleep(time::Duration::from_millis(200));
+        thread::sleep(time::Duration::from_millis(0));
 
         let op = Opcode::new(opcode);
         type OpcodeFunc = fn(&mut Cpu, Opcode);
