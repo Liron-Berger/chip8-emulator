@@ -78,19 +78,19 @@ fn op_2nnn(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_3xnn(cpu: &mut Cpu, opcode: Opcode) {
     if cpu.registers[opcode.x as usize] == opcode.kk {
-        cpu.pc += 2;
+        cpu.advance_pc();
     }
 }
 
 fn op_4xnn(cpu: &mut Cpu, opcode: Opcode) {
     if cpu.registers[opcode.x as usize] != opcode.kk {
-        cpu.pc += 2;
+        cpu.advance_pc();
     }
 }
 
 fn op_5xy0(cpu: &mut Cpu, opcode: Opcode) {
     if cpu.registers[opcode.x as usize] == cpu.registers[opcode.y as usize] {
-        cpu.pc += 2;
+        cpu.advance_pc();
     }
 }
 
