@@ -1,6 +1,6 @@
 use crate::instructions::get_opcode_func;
 
-
+#[derive(Copy, Clone)]
 pub struct Cpu {
     pub registers: [u8; Cpu::REGISTERS_SIZE],
     pub ram: [u8; Cpu::RAM_SIZE],
