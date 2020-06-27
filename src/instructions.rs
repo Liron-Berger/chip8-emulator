@@ -81,6 +81,7 @@ fn op_0nnn(cpu: &mut Cpu, opcode: Opcode) {}
 #[allow(unused_variables)]
 fn op_00e0(cpu: &mut Cpu, opcode: Opcode) {
    println!("Clear the display"); 
+   cpu.advance_pc();
 }
 
 fn op_00ee(cpu: &mut Cpu, _: Opcode) {
@@ -96,23 +97,26 @@ fn op_1nnn(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_2nnn(cpu: &mut Cpu, opcode: Opcode) {
     cpu.sp += 1;
-    cpu.stack[cpu.sp as usize] = cpu.pc;
+    cpu.stack[cpu.sp as usize] = cpu.pc + 2;
     cpu.pc = opcode.nnn;
 }
 
 fn op_3xnn(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.advance_pc();
     if cpu.registers[opcode.x as usize] == opcode.kk {
         cpu.advance_pc();
     }
 }
 
 fn op_4xnn(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.advance_pc();
     if cpu.registers[opcode.x as usize] != opcode.kk {
         cpu.advance_pc();
     }
 }
 
 fn op_5xy0(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.advance_pc();
     if cpu.registers[opcode.x as usize] == cpu.registers[opcode.y as usize] {
         cpu.advance_pc();
     }
@@ -120,67 +124,79 @@ fn op_5xy0(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_6xnn(cpu: &mut Cpu, opcode: Opcode) {
     cpu.registers[opcode.x as usize] = opcode.kk;
+    cpu.advance_pc();
 }
 
 fn op_7xnn(cpu: &mut Cpu, opcode: Opcode) {
     cpu.set_v(opcode.x, cpu.get_v(opcode.x).wrapping_add(opcode.kk));
+    cpu.advance_pc();
 }
 
 fn op_8xy0(cpu: &mut Cpu, opcode: Opcode) {
     cpu.set_v(opcode.x, cpu.get_v(opcode.y));
+    cpu.advance_pc();
 }
 
 fn op_8xy1(cpu: &mut Cpu, opcode: Opcode) {
     cpu.set_v(opcode.x, cpu.get_v(opcode.x) | cpu.get_v(opcode.y));
+    cpu.advance_pc();
 }
 
 fn op_8xy2(cpu: &mut Cpu, opcode: Opcode) {
     cpu.set_v(opcode.x, cpu.get_v(opcode.x) & cpu.get_v(opcode.y));
+    cpu.advance_pc();
 }
 
 fn op_8xy3(cpu: &mut Cpu, opcode: Opcode) {
     cpu.set_v(opcode.x, cpu.get_v(opcode.x) ^ cpu.get_v(opcode.y));
+    cpu.advance_pc();
 }
 
 fn op_8xy4(cpu: &mut Cpu, opcode: Opcode) {
     let (vx, vf) = cpu.get_v(opcode.x).overflowing_add(cpu.get_v(opcode.y));
     cpu.set_v(opcode.x, vx);
     cpu.set_v(Cpu::VF, vf as u8);
+    cpu.advance_pc();
 }
 
 fn op_8xy5(cpu: &mut Cpu, opcode: Opcode) {
     let (vx, vf) = cpu.get_v(opcode.x).overflowing_sub(cpu.get_v(opcode.y));
     cpu.set_v(opcode.x, vx);
     cpu.set_v(Cpu::VF, vf as u8);
+    cpu.advance_pc();
 }
 
 fn op_8xy6(cpu: &mut Cpu, opcode: Opcode) {
     let vx = cpu.get_v(opcode.x);
     cpu.set_v(opcode.x, vx >> 1);
     cpu.set_v(Cpu::VF, Cpu::get_u8_lsb(vx));
+    cpu.advance_pc();
 }
 
 fn op_8xy7(cpu: &mut Cpu, opcode: Opcode) {
     let (vx, vf) = cpu.get_v(opcode.y).overflowing_sub(cpu.get_v(opcode.x));
     cpu.set_v(opcode.x, vx);
     cpu.set_v(Cpu::VF, vf as u8);
+    cpu.advance_pc();
 }
 
 fn op_8xye(cpu: &mut Cpu, opcode: Opcode) {
     let vx = cpu.get_v(opcode.x);
     cpu.set_v(opcode.x, vx << 1);
     cpu.set_v(Cpu::VF, Cpu::get_u8_msb(vx));
+    cpu.advance_pc();
 }
 
 fn op_9xy0(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.advance_pc();
     if cpu.get_v(opcode.x) == cpu.get_v(opcode.y) {
         cpu.advance_pc();
     }
 }
 
 fn op_annn(cpu: &mut Cpu, opcode: Opcode) {
-    println!("Set to: {}", opcode.nnn);
     cpu.i = opcode.nnn; 
+    cpu.advance_pc();
 }
 
 fn op_bnnn(cpu: &mut Cpu, opcode: Opcode) {
@@ -190,12 +206,14 @@ fn op_bnnn(cpu: &mut Cpu, opcode: Opcode) {
 fn op_cxnn(cpu: &mut Cpu, opcode: Opcode) {
     let mut rng = rand::thread_rng();
     cpu.set_v(opcode.x, (rng.gen_range(0, 0xff) as u8) & opcode.kk);
+    cpu.advance_pc();
 }
 
 fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
     let (x, mut y) = (cpu.get_v(opcode.x), cpu.get_v(opcode.y));
 
     for i in cpu.i..cpu.i + opcode.n as u16 {
+        println!("{:x}, {:x}, {:x}", i, cpu.ram[i as usize], i as usize);
         let mut byte = cpu.ram[i as usize];
         for j in 0..7 {
             if ((x + j) as usize) < Display::HEIGHT {
@@ -205,56 +223,58 @@ fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
         }
         y += 1;
     }
-    println!("{}", cpu.display);
+    // println!("{}", cpu.display);
+    cpu.advance_pc();
 }
 
 fn op_ex9e(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.advance_pc();
     if cpu.keyboard[cpu.get_v(opcode.x) as usize] == 1 {
         cpu.advance_pc();
     }
-    println!("Checking key is down on {}", cpu.get_v(opcode.x));
-
 }
 
 fn op_exa1(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.advance_pc();
     if cpu.keyboard[cpu.get_v(opcode.x) as usize] == 0 {
         cpu.advance_pc();
     }
-    println!("Checking key is up on {}", cpu.get_v(opcode.x));
 }
 
 fn op_fx07(cpu: &mut Cpu, opcode: Opcode) {
-    println!("DELAY");
     cpu.set_v(opcode.x, cpu.dt);
+    cpu.advance_pc();
 }
 
 fn op_fx0a(cpu: &mut Cpu, opcode: Opcode) {
-    println!("WAITING FOR KEYPRESS");
     let key = cpu.check_keypress();
     if key == -1 {
         cpu.wait_key = true;
+    } else {
+        cpu.advance_pc();
+        cpu.wait_key = false;
     }
-    cpu.wait_key = false;
     cpu.set_v(opcode.x, key as u8);
 }
 
 fn op_fx15(cpu: &mut Cpu, opcode: Opcode) {
-    println!("SETTING DELAY");
     cpu.dt = cpu.get_v(opcode.x);
+    cpu.advance_pc();
 }
 
 fn op_fx18(cpu: &mut Cpu, opcode: Opcode) {
-    println!("SETTING SOUND");
     cpu.st = cpu.get_v(opcode.x);
+    cpu.advance_pc();
 }
 
 fn op_fx1e(cpu: &mut Cpu, opcode: Opcode) {
-    cpu.i += cpu.get_v(opcode.x) as u16
+    cpu.i += cpu.get_v(opcode.x) as u16;
+    cpu.advance_pc();
 }
 
 fn op_fx29(cpu: &mut Cpu, opcode: Opcode) {
     cpu.i = (cpu.get_v(opcode.x) * 5) as u16;
-    println!("DRAWING SPRITE {}", cpu.get_v(opcode.x));
+    cpu.advance_pc();
 }
 
 fn op_fx33(cpu: &mut Cpu, opcode: Opcode) {
@@ -262,18 +282,21 @@ fn op_fx33(cpu: &mut Cpu, opcode: Opcode) {
     cpu.ram[cpu.i as usize] = vx / 100;
     cpu.ram[(cpu.i + 1) as usize] = (vx % 100) / 10;
     cpu.ram[(cpu.i + 2) as usize] = vx % 10;
+    cpu.advance_pc();
 }
 
 fn op_fx55(cpu: &mut Cpu, opcode: Opcode) {
     for i in 0..opcode.x {
         cpu.ram[(cpu.i + (i as u16)) as usize] = cpu.get_v(opcode.x);
     }
+    cpu.advance_pc();
 }
 
 fn op_fx65(cpu: &mut Cpu, opcode: Opcode) {
     for i in 0..opcode.x {
         cpu.set_v(opcode.x, cpu.ram[(cpu.i + (i as u16)) as usize]);
     }
+    cpu.advance_pc();
 }
 
 #[allow(unused_variables)]
