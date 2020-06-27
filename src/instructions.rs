@@ -222,7 +222,6 @@ fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
         }
         y += 1;
     }
-    println!("{}", cpu.display);
     cpu.advance_pc();
 }
 
