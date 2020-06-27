@@ -89,6 +89,22 @@ impl Video {
                 Event::KeyDown { keycode: Some(Keycode::X), .. } => { self.emulator.cpu.keyboard[13] = 1; }
                 Event::KeyDown { keycode: Some(Keycode::C), .. } => { self.emulator.cpu.keyboard[14] = 1; }
                 Event::KeyDown { keycode: Some(Keycode::V), .. } => { self.emulator.cpu.keyboard[15] = 1; }
+                Event::KeyUp { keycode: Some(Keycode::Num1), .. } => { self.emulator.cpu.keyboard[0] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::Num2), .. } => { self.emulator.cpu.keyboard[1] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::Num3), .. } => { self.emulator.cpu.keyboard[2] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::Num4), .. } => { self.emulator.cpu.keyboard[3] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::Q), .. } => { self.emulator.cpu.keyboard[4] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::W), .. } => { self.emulator.cpu.keyboard[5] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::E), .. } => { self.emulator.cpu.keyboard[6] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::R), .. } => { self.emulator.cpu.keyboard[7] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::A), .. } => { self.emulator.cpu.keyboard[8] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::S), .. } => { self.emulator.cpu.keyboard[9] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::D), .. } => { self.emulator.cpu.keyboard[10] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::F), .. } => { self.emulator.cpu.keyboard[11] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::Z), .. } => { self.emulator.cpu.keyboard[12] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::X), .. } => { self.emulator.cpu.keyboard[13] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::C), .. } => { self.emulator.cpu.keyboard[14] = 0; }
+                Event::KeyUp { keycode: Some(Keycode::V), .. } => { self.emulator.cpu.keyboard[15] = 0; }
                 _ => {},
             }
         }

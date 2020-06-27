@@ -196,6 +196,7 @@ fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_ex9e(cpu: &mut Cpu, opcode: Opcode) {
     println!("Checking key is down on {}", cpu.get_v(opcode.x));
+
 }
 
 fn op_exa1(cpu: &mut Cpu, opcode: Opcode) {
