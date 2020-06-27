@@ -47,6 +47,10 @@ impl Cpu {
         self.pc += 2;
     }
 
+    pub fn jump_pc(&mut self, addr: u16) {
+        self.pc = addr;
+    }
+
     pub fn get_v(&self, index: u8) -> u8 {
         self.registers[index as usize]
     }

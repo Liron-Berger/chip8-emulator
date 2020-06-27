@@ -1,4 +1,7 @@
 extern crate gl;
+
+use rand::Rng;
+
 use crate::cpu::Cpu;
 use crate::opcode::Opcode;
 
@@ -16,6 +19,8 @@ pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
         0x8 => op_8(opcode),
         0x9 => op_9xy0,
         0xa => op_annn,
+        0xb => op_bnnn,
+        0xc => op_cxnn,
         _ => default,
     }
 }
@@ -42,12 +47,6 @@ fn op_8(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
         _ => default
     }
 }
-
-#[allow(unused_variables)]
-fn op_9(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
-    op_3xnn
-}
-
 
 #[allow(unused_variables)]
 #[allow(dead_code)]
@@ -159,11 +158,14 @@ fn op_annn(cpu: &mut Cpu, opcode: Opcode) {
    cpu.i = opcode.nnn; 
 }
 
-fn op_bnnn(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_bnnn(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.jump_pc(cpu.get_v(Cpu::V0) as u16 + opcode.nnn)
+}
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_cxnn(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_cxnn(cpu: &mut Cpu, opcode: Opcode) {
+    let mut rng = rand::thread_rng();
+    cpu.set_v(opcode.x, (rng.gen_range(0, 0xff) as u8) & opcode.kk);
+}
 
 #[allow(unused_variables)]
 #[allow(dead_code)]
