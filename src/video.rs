@@ -1,4 +1,8 @@
 extern crate sdl2;
+extern crate gl;
+
+use sdl2::render::Canvas;
+
 use crate::emulator::Emulator;
 
 pub struct Window {
@@ -6,6 +10,15 @@ pub struct Window {
     width: u32,
     height: u32,
     emulator: Emulator,
+}
+
+fn find_sdl_gl_driver() -> Option<u32> {
+    for (index, item) in sdl2::render::drivers().enumerate() {
+        if item.name == "opengl" {
+            return Some(index as u32);
+        }
+    }
+    None
 }
 
 impl Window {
@@ -21,12 +34,19 @@ impl Window {
     pub fn run(&mut self) {
         let sdl = sdl2::init().unwrap();
         let video_subsystem = sdl.video().unwrap();
+
         let window = video_subsystem
             .window(&self.title, self.width, self.height)
+            .opengl()
             .resizable()
             .build()
             .unwrap();
-     
+        let mut canvas = window.into_canvas()
+            .index(find_sdl_gl_driver().unwrap())
+            .build()
+            .unwrap();
+        gl::load_with(|name| video_subsystem.gl_get_proc_address(name) as *const _);
+        canvas.window().gl_set_context_to_current(); 
         let mut event_pump = sdl.event_pump().unwrap();
 
         'running: loop {
@@ -37,13 +57,17 @@ impl Window {
                 }
             }
 
-            // self.render();
-            // self.update();
+            self.render();
+            canvas.present();
+            self.update();
         }
     }
 
     fn render(&self) {
-        
+        unsafe {
+            gl::ClearColor(0.6, 0.0, 0.8, 1.0);
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+        }
     }
 
     fn update(&mut self) {
