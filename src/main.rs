@@ -3,6 +3,7 @@ mod emulator;
 mod instructions;
 mod video;
 mod opcode;
+mod display;
 
 use std::env;
 use std::fs;

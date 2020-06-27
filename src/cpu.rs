@@ -1,7 +1,8 @@
 use crate::instructions::get_opcode_func;
 use crate::opcode::Opcode;
+use crate::display::Display;
 
-#[derive(Copy, Clone)]
+
 pub struct Cpu {
     pub registers: [u8; Cpu::REGISTERS_SIZE],
     pub ram: [u8; Cpu::RAM_SIZE as usize],
@@ -9,6 +10,7 @@ pub struct Cpu {
     pub pc: u16,
     pub sp: u8,
     pub i: u16,
+    pub display: Display,
 }
 
 impl Cpu {
@@ -30,6 +32,7 @@ impl Cpu {
             pc: 0x200,
             sp: 0,
             i: 0,
+            display: Display::new()
         }
     }
 

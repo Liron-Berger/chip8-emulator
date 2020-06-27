@@ -1,6 +1,5 @@
 use crate::cpu::Cpu;
 
-#[derive(Copy, Clone)]
 pub struct Emulator {
    pub cpu: Cpu,
 }

@@ -71,6 +71,7 @@ impl Video {
     }
 
     fn render(&mut self) {
+        println!("{}", self.emulator.cpu.display);
         // unsafe {
         //     gl::ClearColor(0.6, 0.0, 0.8, 1.0);
         //     gl::Clear(gl::COLOR_BUFFER_BIT);
