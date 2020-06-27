@@ -40,6 +40,10 @@ impl Cpu {
         self.pc == Cpu::RAM_SIZE
     }
 
+    pub fn advance_pc(&mut self) {
+        self.pc += 2;
+    }
+
     pub fn get_v(&self, index: u8) -> u8 {
         self.registers[index as usize]
     }
