@@ -22,6 +22,7 @@ impl Emulator {
     }
 
     pub fn update(&mut self) -> bool {
+        self.cpu.empty_keyboard();
         let opcode = self.get_opcode();
         self.cpu.run_opcode(opcode)
     }

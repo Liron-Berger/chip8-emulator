@@ -11,12 +11,15 @@ pub struct Cpu {
     pub sp: u8,
     pub i: u16,
     pub display: Display,
+    pub keyboard: [u16; Cpu::KEYBOARD_SIZE],
 }
 
 impl Cpu {
     pub const RAM_SIZE: u16 = 0x1000;
     pub const REGISTERS_SIZE: usize = 0x10;
     pub const STACK_SIZE: usize = 0x10;
+    pub const KEYBOARD_SIZE: usize = 0x10;
+
     pub const VF: u8 = 0xf;
     pub const V0: u8 = 0x0;
 
@@ -32,12 +35,17 @@ impl Cpu {
             pc: 0x200,
             sp: 0,
             i: 0,
-            display: Display::new()
+            display: Display::new(),
+            keyboard: [0; Cpu::KEYBOARD_SIZE],
         }
     }
 
+    pub fn empty_keyboard(&mut self) {
+        self.keyboard = [0; Cpu::KEYBOARD_SIZE]
+    }
+
     pub fn run_opcode(&mut self, opcode: u16) -> bool {
-        self.pc += 2;
+        // self.pc += 2;
         let op = Opcode::new(opcode);
         type OpcodeFunc = fn(&mut Cpu, Opcode);
         let func: OpcodeFunc = get_opcode_func(&op);

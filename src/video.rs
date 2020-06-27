@@ -5,6 +5,7 @@ use sdl2::render::Canvas;
 use sdl2::video::Window;
 use sdl2::EventPump;
 use sdl2::event::Event;
+use sdl2::keyboard::Keycode;
 
 use crate::emulator::Emulator;
 
@@ -57,11 +58,8 @@ impl Video {
 
     pub fn run(&mut self) {
         'running: loop {
-            for event in self.event_pump.poll_iter() {
-                match event {
-                    Event::Quit {..} => break 'running,
-                    _ => {},
-                }
+            if self.check_keyboard() {
+                break 'running
             }
 
             self.render();
@@ -71,11 +69,39 @@ impl Video {
         }
     }
 
+    pub fn check_keyboard(&mut self) -> bool {
+        for event in self.event_pump.poll_iter() {
+            match event {
+                Event::Quit {..} => { return true; },
+                Event::KeyDown { keycode: Some(Keycode::Num1), .. } => { self.emulator.cpu.keyboard[0] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::Num2), .. } => { self.emulator.cpu.keyboard[1] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::Num3), .. } => { self.emulator.cpu.keyboard[2] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::Num4), .. } => { self.emulator.cpu.keyboard[3] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::Q), .. } => { self.emulator.cpu.keyboard[4] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::W), .. } => { self.emulator.cpu.keyboard[5] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::E), .. } => { self.emulator.cpu.keyboard[6] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::R), .. } => { self.emulator.cpu.keyboard[7] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::A), .. } => { self.emulator.cpu.keyboard[8] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::S), .. } => { self.emulator.cpu.keyboard[9] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::D), .. } => { self.emulator.cpu.keyboard[10] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::F), .. } => { self.emulator.cpu.keyboard[11] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::Z), .. } => { self.emulator.cpu.keyboard[12] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::X), .. } => { self.emulator.cpu.keyboard[13] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::C), .. } => { self.emulator.cpu.keyboard[14] = 1; }
+                Event::KeyDown { keycode: Some(Keycode::V), .. } => { self.emulator.cpu.keyboard[15] = 1; }
+                _ => {},
+            }
+        }
+        false
+    }
+
     fn render(&mut self) {
-        // self.emulator.cpu.display);
-        //     gl::ClearColor(0.6, 0.0, 0.8, 1.0);
-        //     gl::Clear(gl::COLOR_BUFFER_BIT);
-        // }
+        for i in 0..15 {
+            if self.emulator.cpu.keyboard[i] != 0 {
+                println!("{:?}", self.emulator.cpu.keyboard);
+                break;
+            }
+        }
         self.canvas.present();
     }
 
