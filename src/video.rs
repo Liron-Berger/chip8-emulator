@@ -126,15 +126,12 @@ impl Video {
                 }
             }
         }
-
-        self.canvas.set_draw_color(Color::RGB(255, 210, 0));
-        self.canvas.fill_rect(Rect::new(10, 10, 10, 10));
         self.canvas.present();
     }
 
     fn fill_rect(&mut self, i: i32, j: i32, r: u8, g: u8, b: u8) {
         self.canvas.set_draw_color(Color::RGB(r, g, b));
-        self.canvas.fill_rect(Rect::new(j * Video::PIXEL_FACTOR as i32, i * Video::PIXEL_FACTOR as i32, Video::PIXEL_FACTOR, Video::PIXEL_FACTOR));
+        self.canvas.fill_rect(Rect::new(j * Video::PIXEL_FACTOR as i32, i * Video::PIXEL_FACTOR as i32, Video::PIXEL_FACTOR, Video::PIXEL_FACTOR)).unwrap();
     }
 
     fn update(&mut self) -> bool {

@@ -210,7 +210,7 @@ fn op_cxnn(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
-    let (mut x, mut y) = (cpu.get_v(opcode.x), cpu.get_v(opcode.y));
+    let (x, mut y) = (cpu.get_v(opcode.x), cpu.get_v(opcode.y));
 
     for i in cpu.i..cpu.i + opcode.n as u16 {
         let mut byte = cpu.ram[i as usize];

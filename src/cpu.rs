@@ -99,7 +99,7 @@ impl Cpu {
     }
 
     pub fn add_sprites(&mut self) {
-        const chip8_fontset: [u8; 80] = [ 
+        const CHIP8_FONTSET: [u8; 80] = [ 
             0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
             0x20, 0x60, 0x20, 0x20, 0x70, // 1
             0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
@@ -117,8 +117,8 @@ impl Cpu {
             0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
             0xF0, 0x80, 0xF0, 0x80, 0x80  // F
         ];
-        for i in 0..chip8_fontset.len() {
-            self.ram[i] = chip8_fontset[i];
+        for i in 0..CHIP8_FONTSET.len() {
+            self.ram[i] = CHIP8_FONTSET[i];
         }
     }
 }
