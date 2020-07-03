@@ -1,9 +1,11 @@
 mod cpu;
 mod emulator;
 mod instructions;
-mod video;
 mod opcode;
 mod display;
+
+mod keyboard_driver;
+mod graphics_driver;
 
 use std::env;
 use std::fs;
@@ -37,7 +39,7 @@ fn main() {
     let program = read_program(file_name);
     let mut emulator = Emulator::new();
     emulator.load_program(program);
+    emulator.run();
 
-    let mut video = video::Video::new("Chip8", emulator);
-    video.run();
+    // let mut video = graphics_driver::Video::new("Chip8", emulator);
 }

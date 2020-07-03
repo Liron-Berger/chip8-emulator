@@ -58,7 +58,7 @@ impl Cpu {
         if self.dt > 0 {
             self.dt -= 1;
         }
-        println!("{:x}, {:?}", opcode, self);
+        // println!("{:x}, {:?}", opcode, self);
         self.pc == Cpu::RAM_SIZE
     }
 
@@ -75,9 +75,6 @@ impl Cpu {
     }
 
     pub fn set_v(&mut self, index: u8, value: u8) {
-        if (index == 0xf) {
-        println!("{:x}, {}", index, value);
-        }
         self.registers[index as usize] = value;
     }
 
