@@ -36,14 +36,18 @@ impl Emulator {
 
     pub fn run(&mut self) {
         loop {
+            let keyboard_state = self.keyboard_driver.get_keyboard_state();
+
             self.update();
 
-            println!("{:?}", self.keyboard_driver.get_keyboard_state());
+            self.cpu.keyboard = keyboard_state;
         }
     }
 
     pub fn update(&mut self) {
         let opcode = self.get_opcode();
         self.cpu.run_opcode(opcode);
+
+        self.graphics_driver.render(&self.cpu.display);
     }
 }

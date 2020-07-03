@@ -245,14 +245,14 @@ fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_ex9e(cpu: &mut Cpu, opcode: Opcode) {
     cpu.advance_pc();
-    if cpu.keyboard[cpu.get_v(opcode.x) as usize] == 1 {
+    if cpu.keyboard[cpu.get_v(opcode.x) as usize] {
         cpu.advance_pc();
     }
 }
 
 fn op_exa1(cpu: &mut Cpu, opcode: Opcode) {
     cpu.advance_pc();
-    if cpu.keyboard[cpu.get_v(opcode.x) as usize] == 0 {
+    if !cpu.keyboard[cpu.get_v(opcode.x) as usize] {
         cpu.advance_pc();
     }
 }

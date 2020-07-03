@@ -11,7 +11,7 @@ pub struct Cpu {
     pub sp: u8,
     pub i: u16,
     pub display: Display,
-    pub keyboard: [u16; Cpu::KEYBOARD_SIZE],
+    pub keyboard: [bool; Cpu::KEYBOARD_SIZE],
     pub dt: u8,
     pub st: u8,
     pub wait_key: bool,
@@ -39,7 +39,7 @@ impl Cpu {
             sp: 0,
             i: 0,
             display: Display::new(),
-            keyboard: [0; Cpu::KEYBOARD_SIZE],
+            keyboard: [false; Cpu::KEYBOARD_SIZE],
             dt: 0,
             st: 0,
             wait_key: false,
@@ -80,7 +80,7 @@ impl Cpu {
 
     pub fn check_keypress(&self) -> i16 {
         for i in 0..15 {
-            if self.keyboard[i] != 0 {
+            if self.keyboard[i] {
                 println!("{:?}", self.keyboard);
                 return i as i16;
             }
