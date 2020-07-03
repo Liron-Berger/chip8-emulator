@@ -50,8 +50,6 @@ impl Cpu {
 
     pub fn run_opcode(&mut self, opcode: u16) -> bool {
         use std::{thread, time};
-        thread::sleep(time::Duration::from_millis(0));
-
         let op = Opcode::new(opcode);
         type OpcodeFunc = fn(&mut Cpu, Opcode);
         let func: OpcodeFunc = get_opcode_func(&op);
@@ -77,6 +75,9 @@ impl Cpu {
     }
 
     pub fn set_v(&mut self, index: u8, value: u8) {
+        if (index == 0xf) {
+        println!("{:x}, {}", index, value);
+        }
         self.registers[index as usize] = value;
     }
 

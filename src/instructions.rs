@@ -30,6 +30,7 @@ pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
 
 fn op_0(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     match opcode.kk {
+        0x00 => op_0nnn,
         0xe0 => op_00e0,
         0xee => op_00ee,
         _ => default
@@ -74,21 +75,19 @@ fn op_f(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     }
 }
 
-#[allow(unused_variables)]
-#[allow(dead_code)]
-fn op_0nnn(cpu: &mut Cpu, opcode: Opcode) {}
+fn op_0nnn(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.advance_pc();
+}
 
 #[allow(unused_variables)]
 fn op_00e0(cpu: &mut Cpu, opcode: Opcode) {
-   println!("Clear the display"); 
-   cpu.advance_pc();
+    cpu.display.clear();
+    cpu.advance_pc();
 }
 
 fn op_00ee(cpu: &mut Cpu, _: Opcode) {
-    if cpu.sp > 0 {
-        cpu.sp -= 1;
-        cpu.pc = cpu.stack[cpu.sp as usize];
-    }
+    cpu.sp -= 1;
+    cpu.pc = cpu.stack[cpu.sp as usize];
 }
 
 fn op_1nnn(cpu: &mut Cpu, opcode: Opcode) {
@@ -103,27 +102,27 @@ fn op_2nnn(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_3xnn(cpu: &mut Cpu, opcode: Opcode) {
     cpu.advance_pc();
-    if cpu.registers[opcode.x as usize] == opcode.kk {
+    if cpu.get_v(opcode.x) == opcode.kk {
         cpu.advance_pc();
     }
 }
 
 fn op_4xnn(cpu: &mut Cpu, opcode: Opcode) {
     cpu.advance_pc();
-    if cpu.registers[opcode.x as usize] != opcode.kk {
+    if cpu.get_v(opcode.x) != opcode.kk {
         cpu.advance_pc();
     }
 }
 
 fn op_5xy0(cpu: &mut Cpu, opcode: Opcode) {
     cpu.advance_pc();
-    if cpu.registers[opcode.x as usize] == cpu.registers[opcode.y as usize] {
+    if cpu.get_v(opcode.x) == cpu.get_v(opcode.y) {
         cpu.advance_pc();
     }
 }
 
 fn op_6xnn(cpu: &mut Cpu, opcode: Opcode) {
-    cpu.registers[opcode.x as usize] = opcode.kk;
+    cpu.set_v(opcode.x,  opcode.kk);
     cpu.advance_pc();
 }
 
@@ -153,43 +152,62 @@ fn op_8xy3(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_8xy4(cpu: &mut Cpu, opcode: Opcode) {
+    /*    
+    let vx = cpu.get_v(opcode.x) as u16;
+    let vy = cpu.get_v(opcode.x) as u16;
+    let result = vx + vy;
+    cpu.set_v(opcode.x, result as u8);
+    cpu.set_v(Cpu::VF, if result > 0xff {1} else {0});
+    cpu.advance_pc();
+    */
+       
     let (vx, vf) = cpu.get_v(opcode.x).overflowing_add(cpu.get_v(opcode.y));
     cpu.set_v(opcode.x, vx);
     cpu.set_v(Cpu::VF, vf as u8);
     cpu.advance_pc();
+    
 }
 
 fn op_8xy5(cpu: &mut Cpu, opcode: Opcode) {
-    let (vx, vf) = cpu.get_v(opcode.x).overflowing_sub(cpu.get_v(opcode.y));
-    cpu.set_v(opcode.x, vx);
-    cpu.set_v(Cpu::VF, vf as u8);
+    // let (vx, vf) = cpu.get_v(opcode.x).overflowing_sub(cpu.get_v(opcode.y));
+    cpu.set_v(Cpu::VF, if cpu.get_v(opcode.x) > cpu.get_v(opcode.y) { 1 } else { 0 });
+    cpu.set_v(opcode.x, cpu.get_v(opcode.x).wrapping_sub(cpu.get_v(opcode.y)));
     cpu.advance_pc();
 }
 
 fn op_8xy6(cpu: &mut Cpu, opcode: Opcode) {
-    let vx = cpu.get_v(opcode.x);
-    cpu.set_v(opcode.x, vx >> 1);
-    cpu.set_v(Cpu::VF, Cpu::get_u8_lsb(vx));
+    // let vx = cpu.get_v(opcode.x);
+    cpu.set_v(Cpu::VF, cpu.get_v(opcode.x & 1)); // Cpu::get_u8_lsb(vx));
+    cpu.set_v(opcode.x, cpu.get_v(opcode.x) >> 1);
     cpu.advance_pc();
 }
 
 fn op_8xy7(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.set_v(Cpu::VF, if cpu.get_v(opcode.y) > cpu.get_v(opcode.x) { 1 } else { 0 });
+    cpu.set_v(opcode.x, cpu.get_v(opcode.y).wrapping_sub(cpu.get_v(opcode.x)));
+    cpu.advance_pc();
+    /*
     let (vx, vf) = cpu.get_v(opcode.y).overflowing_sub(cpu.get_v(opcode.x));
     cpu.set_v(opcode.x, vx);
     cpu.set_v(Cpu::VF, vf as u8);
     cpu.advance_pc();
+    */
 }
 
 fn op_8xye(cpu: &mut Cpu, opcode: Opcode) {
+    cpu.set_v(Cpu::VF, (cpu.get_v(opcode.x) & 0b10000000) >> 7);
+    cpu.set_v(opcode.x, cpu.get_v(opcode.x) << 1);
+    /*
     let vx = cpu.get_v(opcode.x);
-    cpu.set_v(opcode.x, vx << 1);
     cpu.set_v(Cpu::VF, Cpu::get_u8_msb(vx));
+    cpu.set_v(opcode.x, vx << 1);
+    */
     cpu.advance_pc();
 }
 
 fn op_9xy0(cpu: &mut Cpu, opcode: Opcode) {
     cpu.advance_pc();
-    if cpu.get_v(opcode.x) == cpu.get_v(opcode.y) {
+    if cpu.get_v(opcode.x) != cpu.get_v(opcode.y) {
         cpu.advance_pc();
     }
 }
@@ -200,7 +218,7 @@ fn op_annn(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_bnnn(cpu: &mut Cpu, opcode: Opcode) {
-    cpu.jump_pc(cpu.get_v(Cpu::V0) as u16 + opcode.nnn)
+    cpu.jump_pc(cpu.get_v(0) as u16 + opcode.nnn)
 }
 
 fn op_cxnn(cpu: &mut Cpu, opcode: Opcode) {
@@ -216,7 +234,7 @@ fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
         let mut byte = cpu.ram[i as usize];
         for j in 0..8 {
             if ((x + j) as usize) < Display::WIDTH {
-                cpu.registers[Cpu::VF as usize] |= cpu.display.draw_pixel(x + j - 1, y, Cpu::get_u8_msb(byte));
+                cpu.registers[Cpu::VF as usize] |= cpu.display.draw_pixel(x + j, y + 1, Cpu::get_u8_msb(byte));
             }
             byte = byte << 1;
         }
@@ -267,11 +285,12 @@ fn op_fx18(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_fx1e(cpu: &mut Cpu, opcode: Opcode) {
     cpu.i += cpu.get_v(opcode.x) as u16;
+    cpu.set_v(Cpu::VF, if cpu.i > 0x0f00 {1} else {0});
     cpu.advance_pc();
 }
 
 fn op_fx29(cpu: &mut Cpu, opcode: Opcode) {
-    cpu.i = (cpu.get_v(opcode.x) * 5) as u16;
+    cpu.i = (cpu.get_v(opcode.x) as u16) * 5;
     cpu.advance_pc();
 }
 
@@ -284,14 +303,14 @@ fn op_fx33(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_fx55(cpu: &mut Cpu, opcode: Opcode) {
-    for i in 0..opcode.x {
+    for i in 0..opcode.x + 1 {
         cpu.ram[(cpu.i + (i as u16)) as usize] = cpu.get_v(opcode.x);
     }
     cpu.advance_pc();
 }
 
 fn op_fx65(cpu: &mut Cpu, opcode: Opcode) {
-    for i in 0..opcode.x {
+    for i in 0..opcode.x + 1 {
         cpu.set_v(opcode.x, cpu.ram[(cpu.i + (i as u16)) as usize]);
     }
     cpu.advance_pc();

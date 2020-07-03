@@ -16,9 +16,13 @@ impl Display {
         }
     }
 
+    pub fn clear(&mut self) {
+        self.pixels = [[0; Display::WIDTH]; Display::HEIGHT];
+    }
+
     pub fn draw_pixel(&mut self, x: u8, y: u8, pixel: u8) -> u8 {
-        self.pixels[y as usize][x as usize] ^= pixel;
-        (self.pixels[y as usize][x as usize] ^ pixel) & pixel
+        self.pixels[y as usize % Display::HEIGHT][x as usize % Display::WIDTH] ^= pixel;
+        (self.pixels[y as usize % Display::HEIGHT][x as usize % Display::WIDTH] ^ pixel) & pixel
     }
 }
 
