@@ -38,7 +38,7 @@ impl Emulator {
         loop {
             self.update();
 
-            self.keyboard_driver.get_keyboard_state();
+            println!("{:?}", self.keyboard_driver.get_keyboard_state());
         }
     }
 
