@@ -65,4 +65,3 @@ impl GraphicsDriver {
         self.canvas.fill_rect(Rect::new(j * GraphicsDriver::PIXEL_FACTOR as i32, i * GraphicsDriver::PIXEL_FACTOR as i32, GraphicsDriver::PIXEL_FACTOR, GraphicsDriver::PIXEL_FACTOR)).unwrap();
     }
 }
-
