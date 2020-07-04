@@ -3,8 +3,8 @@ extern crate gl;
 use rand::Rng;
 
 use crate::cpu::Cpu;
-use crate::opcode::Opcode;
 use crate::display::Display;
+use crate::opcode::Opcode;
 
 pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     match (opcode.opcode & 0xf000) >> 12 {
@@ -75,6 +75,7 @@ fn op_f(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     }
 }
 
+#[allow(unused_variables)]
 fn op_0nnn(cpu: &mut Cpu, opcode: Opcode) {
     cpu.advance_pc();
 }

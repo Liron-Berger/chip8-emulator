@@ -1,7 +1,6 @@
+use crate::display::Display;
 use crate::instructions::get_opcode_func;
 use crate::opcode::Opcode;
-use crate::display::Display;
-
 
 pub struct Cpu {
     pub registers: [u8; Cpu::REGISTERS_SIZE],
@@ -24,7 +23,6 @@ impl Cpu {
     pub const KEYBOARD_SIZE: usize = 0x10;
 
     pub const VF: u8 = 0xf;
-    pub const V0: u8 = 0x0;
 
     pub const PROGRAM_OFFSET: usize = 0x200;
 
@@ -49,7 +47,6 @@ impl Cpu {
     }
 
     pub fn run_opcode(&mut self, opcode: u16) -> bool {
-        use std::{thread, time};
         let op = Opcode::new(opcode);
         type OpcodeFunc = fn(&mut Cpu, Opcode);
         let func: OpcodeFunc = get_opcode_func(&op);
@@ -58,7 +55,7 @@ impl Cpu {
         if self.dt > 0 {
             self.dt -= 1;
         }
-        // println!("{:x}, {:?}", opcode, self);
+        println!("{:x}, {:?}", opcode, self);
         self.pc == Cpu::RAM_SIZE
     }
 
@@ -89,11 +86,11 @@ impl Cpu {
     }
 
     pub fn get_u8_lsb(value: u8) -> u8 {
-        value << 7 >> 7
+        value & 1
     }
 
     pub fn get_u8_msb(value: u8) -> u8 {
-        value >> 7
+        (value & 0b10000000) >> 7
     }
 
     pub fn add_sprites(&mut self) {

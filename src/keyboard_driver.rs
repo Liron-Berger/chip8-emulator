@@ -1,12 +1,12 @@
-use sdl2::Sdl;
-use sdl2::EventPump;
-use std::collections::{HashSet, HashMap};
-use sdl2::keyboard::Scancode;
+use std::collections::HashSet;
+
 use sdl2::event::Event;
-use std::ptr::null;
+use sdl2::EventPump;
+use sdl2::keyboard::Scancode;
+use sdl2::Sdl;
 
 pub struct KeyboardDriver {
-    event_pump: sdl2::EventPump,
+    event_pump: EventPump,
 }
 
 
@@ -15,10 +15,6 @@ impl KeyboardDriver {
         KeyboardDriver {
             event_pump: sdl_context.event_pump().unwrap(),
         }
-    }
-
-    pub fn pressed_scancode_set(&self) -> HashSet<Scancode> {
-        self.event_pump.keyboard_state().pressed_scancodes().collect()
     }
 
     fn get_keyboard_mapping(button: Scancode) -> usize {

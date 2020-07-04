@@ -1,9 +1,6 @@
-use sdl2::Sdl;
-
 use crate::cpu::Cpu;
 use crate::graphics_driver::GraphicsDriver;
 use crate::keyboard_driver::KeyboardDriver;
-
 
 pub struct Emulator {
     cpu: Cpu,
@@ -15,7 +12,7 @@ pub struct Emulator {
 impl Emulator {
 
     pub fn new() -> Emulator {
-        let mut sdl_context = sdl2::init().unwrap();
+        let sdl_context = sdl2::init().unwrap();
 
         Emulator {
             cpu: Cpu::new(),

@@ -1,6 +1,3 @@
-use std::fmt;
-
-
 pub struct Display {
     pub pixels: [[u8; Display::WIDTH]; Display::HEIGHT],
 }
