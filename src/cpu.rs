@@ -1,6 +1,6 @@
 use crate::display::Display;
 use crate::instructions::get_opcode_func;
-use crate::opcode::Opcode;
+use crate::utils::opcode::Opcode;
 
 pub struct Cpu {
     pub registers: [u8; Cpu::REGISTERS_SIZE],
@@ -83,14 +83,6 @@ impl Cpu {
             }
         }
         -1
-    }
-
-    pub fn get_u8_lsb(value: u8) -> u8 {
-        value & 1
-    }
-
-    pub fn get_u8_msb(value: u8) -> u8 {
-        (value & 0b10000000) >> 7
     }
 
     pub fn add_sprites(&mut self) {

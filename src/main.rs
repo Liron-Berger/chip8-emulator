@@ -1,3 +1,4 @@
+
 use std::env;
 use std::fs;
 use std::fs::File;
@@ -8,11 +9,10 @@ use emulator::Emulator;
 mod cpu;
 mod emulator;
 mod instructions;
-mod opcode;
 mod display;
 
-mod keyboard_driver;
-mod graphics_driver;
+mod drivers;
+mod utils;
 
 fn parse_args(args: &Vec<String>) -> &String {
     match args.len() {

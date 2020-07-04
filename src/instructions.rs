@@ -4,7 +4,8 @@ use rand::Rng;
 
 use crate::cpu::Cpu;
 use crate::display::Display;
-use crate::opcode::Opcode;
+use crate::utils::opcode::Opcode;
+use crate::utils::bytes;
 
 pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     match (opcode.opcode & 0xf000) >> 12 {
@@ -214,7 +215,7 @@ fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
         let mut byte = cpu.ram[i as usize];
         for j in 0..8 {
             if ((x + j) as usize) < Display::WIDTH {
-                cpu.registers[Cpu::VF as usize] |= cpu.display.draw_pixel(x + j, y + 1, Cpu::get_u8_msb(byte));
+                cpu.registers[Cpu::VF as usize] |= cpu.display.draw_pixel(x + j, y + 1, bytes::get_u8_msb(byte));
             }
             byte = byte << 1;
         }

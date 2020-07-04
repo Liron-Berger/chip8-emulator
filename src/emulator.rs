@@ -1,6 +1,7 @@
 use crate::cpu::Cpu;
-use crate::graphics_driver::GraphicsDriver;
-use crate::keyboard_driver::KeyboardDriver;
+// use crate::graphics_driver::GraphicsDriver;
+use crate::drivers::keyboard_driver::KeyboardDriver;
+use crate::drivers::graphics_driver::GraphicsDriver;
 
 pub struct Emulator {
     cpu: Cpu,
