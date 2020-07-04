@@ -152,15 +152,6 @@ fn op_8xy3(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_8xy4(cpu: &mut Cpu, opcode: Opcode) {
-    /*    
-    let vx = cpu.get_v(opcode.x) as u16;
-    let vy = cpu.get_v(opcode.x) as u16;
-    let result = vx + vy;
-    cpu.set_v(opcode.x, result as u8);
-    cpu.set_v(Cpu::VF, if result > 0xff {1} else {0});
-    cpu.advance_pc();
-    */
-       
     let (vx, vf) = cpu.get_v(opcode.x).overflowing_add(cpu.get_v(opcode.y));
     cpu.set_v(opcode.x, vx);
     cpu.set_v(Cpu::VF, vf as u8);
@@ -176,8 +167,7 @@ fn op_8xy5(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_8xy6(cpu: &mut Cpu, opcode: Opcode) {
-    // let vx = cpu.get_v(opcode.x);
-    cpu.set_v(Cpu::VF, cpu.get_v(opcode.x & 1)); // Cpu::get_u8_lsb(vx));
+    cpu.set_v(Cpu::VF, cpu.get_v(opcode.x & 1));
     cpu.set_v(opcode.x, cpu.get_v(opcode.x) >> 1);
     cpu.advance_pc();
 }
@@ -186,22 +176,11 @@ fn op_8xy7(cpu: &mut Cpu, opcode: Opcode) {
     cpu.set_v(Cpu::VF, if cpu.get_v(opcode.y) > cpu.get_v(opcode.x) { 1 } else { 0 });
     cpu.set_v(opcode.x, cpu.get_v(opcode.y).wrapping_sub(cpu.get_v(opcode.x)));
     cpu.advance_pc();
-    /*
-    let (vx, vf) = cpu.get_v(opcode.y).overflowing_sub(cpu.get_v(opcode.x));
-    cpu.set_v(opcode.x, vx);
-    cpu.set_v(Cpu::VF, vf as u8);
-    cpu.advance_pc();
-    */
 }
 
 fn op_8xye(cpu: &mut Cpu, opcode: Opcode) {
     cpu.set_v(Cpu::VF, (cpu.get_v(opcode.x) & 0b10000000) >> 7);
     cpu.set_v(opcode.x, cpu.get_v(opcode.x) << 1);
-    /*
-    let vx = cpu.get_v(opcode.x);
-    cpu.set_v(Cpu::VF, Cpu::get_u8_msb(vx));
-    cpu.set_v(opcode.x, vx << 1);
-    */
     cpu.advance_pc();
 }
 

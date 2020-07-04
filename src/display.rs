@@ -25,17 +25,3 @@ impl Display {
         (self.pixels[y as usize % Display::HEIGHT][x as usize % Display::WIDTH] ^ pixel) & pixel
     }
 }
-
-impl fmt::Display for Display {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let mut output = "".to_string();
-        for (i, row) in self.pixels.iter().enumerate() {
-            for (j, _) in row.iter().enumerate() {
-                output += &format!("{}", self.pixels[i][j] as u8);
-            }
-            output += "\n";
-        }
-        write!(f, "{}", output)
-    }
-}
-

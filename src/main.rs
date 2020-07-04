@@ -40,6 +40,4 @@ fn main() {
     let mut emulator = Emulator::new();
     emulator.load_program(program);
     emulator.run();
-
-    // let mut video = graphics_driver::Video::new("Chip8", emulator);
 }

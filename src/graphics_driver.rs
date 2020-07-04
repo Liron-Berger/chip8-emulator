@@ -71,6 +71,5 @@ impl GraphicsDriver {
         self.canvas.set_draw_color(Color::RGB(r, g, b));
         self.canvas.fill_rect(Rect::new(j * GraphicsDriver::PIXEL_FACTOR as i32, i * GraphicsDriver::PIXEL_FACTOR as i32, GraphicsDriver::PIXEL_FACTOR, GraphicsDriver::PIXEL_FACTOR)).unwrap();
     }
-
 }
 
