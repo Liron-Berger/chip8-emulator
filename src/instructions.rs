@@ -298,5 +298,6 @@ fn op_fx65(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 #[allow(unused_variables)]
-#[allow(dead_code)]
-fn default(_: &mut Cpu, _: Opcode) {}
+fn default(_: &mut Cpu, opcode: Opcode) {
+    panic!("Unknown opcode {}", opcode.opcode)
+}
