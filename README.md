@@ -1,7 +1,9 @@
 # Chip8 Emulator
 
 This is my attempt at building an emulator for chip8 as a learning project for Rust.
+
 As the project mainly helped practice the language, I'm still unsure whether I'm going to finish it. 
+
 The project is written in Rust and uses Sdl as a GUI (for cross-platform support)
 
 ![mazze](docs/maze.png)
@@ -20,8 +22,7 @@ cargo run <path_to_rom>
 
 ## Known Bugs
 
-Currently there are quite a lot of bugs in the emulator
-- [ ] One of the equality opcodes is currupted, can be seen when playing pong (the ball bounces from the wall)
+- [ ] In pong - the points of the first player are not updating.
 
 ## Possible future features
 - [ ] Sound Driver

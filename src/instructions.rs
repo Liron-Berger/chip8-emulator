@@ -215,7 +215,7 @@ fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
         let mut byte = cpu.ram[i as usize];
         for j in 0..8 {
             if ((x + j) as usize) < Display::WIDTH {
-                cpu.registers[Cpu::VF as usize] |= cpu.display.draw_pixel(x + j, y + 1, bytes::get_u8_msb(byte));
+                cpu.registers[Cpu::VF as usize] |= cpu.display.draw_pixel(x + j, y, bytes::get_u8_msb(byte));
             }
             byte = byte << 1;
         }
