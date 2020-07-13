@@ -5,6 +5,8 @@ This project was done during two weekends whilst trying to get familiar with the
 As the project mainly helped practice the language, I'm still unsure whether I'm going to finish it. 
 The project is written in Rust and uses Sdl as a GUI (for cross-platform support)
 
+![mazze](docs/maze.png)
+
 ## Requirements
 1. libsdl
 2. Rust
