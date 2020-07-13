@@ -1,7 +1,6 @@
 # Chip8 Emulator
 
 This is my attempt at building an emulator for chip8 as a learning project for Rust.
-This project was done during two weekends whilst trying to get familiar with the new language.
 As the project mainly helped practice the language, I'm still unsure whether I'm going to finish it. 
 The project is written in Rust and uses Sdl as a GUI (for cross-platform support)
 
