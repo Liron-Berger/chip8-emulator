@@ -72,7 +72,6 @@ impl Cpu {
         if self.dt > 0 {
             self.dt -= 1;
         }
-        println!("{:x}, {:?}", opcode, self);
         self.pc == Cpu::RAM_SIZE
     }
 

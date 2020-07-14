@@ -6,7 +6,7 @@ As the project mainly helped practice the language, I'm still unsure whether I'm
 
 The project is written in Rust and uses Sdl as a GUI (for cross-platform support)
 
-![mazze](docs/maze.png)
+![maze](docs/maze.png)
 
 ## Requirements
 1. libsdl
@@ -19,17 +19,17 @@ The project was only tested on Linux Mint but should work properly on all platfo
 cargo run <path_to_rom>
 ```
 
-
 ## Known Bugs
 
-- [ ] In pong - the points of the first player are not updating.
+- [X] In pong - the points of the first player are not updating.
 
 ## Possible future features
 - [ ] Sound Driver
 - [ ] Changing the GUI to WebAssembly using Yew
+- [X] Debug mode
+- [ ] Support for breakpoints
 
 ## Resources
-
 These are the resources used in order to develop the project:
 - https://doc.rust-lang.org/book/ - for learning Rust on the way
 - http://devernay.free.fr/hacks/chip8/C8TECH10.HTM - great technical reference for chip8

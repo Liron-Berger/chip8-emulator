@@ -31,20 +31,23 @@ impl Emulator {
        (self.cpu.ram[self.cpu.pc as usize] as u16) << 8 | self.cpu.ram[(self.cpu.pc + 1) as usize] as u16
     }
 
-    pub fn run(&mut self) {
+    pub fn run(&mut self, debug: bool) {
         loop {
             let keyboard_state = self.keyboard_driver.get_keyboard_state();
 
-            self.update();
+            self.update(debug);
 
             self.cpu.keyboard = keyboard_state;
         }
     }
 
-    pub fn update(&mut self) {
+    pub fn update(&mut self, debug: bool) {
         let opcode = self.get_opcode();
         self.cpu.run_opcode(opcode);
 
+        if debug {
+            println!("{:x}, {:?}", opcode, self.cpu);
+        }
         self.graphics_driver.render(&self.cpu.display);
     }
 }

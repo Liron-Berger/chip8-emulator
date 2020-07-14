@@ -1,8 +1,7 @@
-
-use std::env;
 use std::fs;
 use std::fs::File;
 use std::io::Read;
+use clap::{Arg, App};
 
 use emulator::Emulator;
 
@@ -14,15 +13,28 @@ mod display;
 mod drivers;
 mod utils;
 
-fn parse_args(args: &Vec<String>) -> &String {
-    match args.len() {
-        2 => {
-            return &args[1];
-        },
-        _ => {
-            panic!("You should add a filename to run");
-        }
-    }
+fn parse_args() -> (String, bool) {
+    let matches = App::new("My Test Program")
+        .version("0.1.0")
+        .author("Liron-Berger <lironberger13@gmail.com>")
+        .about("An emulator for Chip8 written in Rust")
+        .arg(Arg::with_name("rom")
+            .short("r")
+            .long("rom")
+            .takes_value(true)
+            .required(true)
+            .help("The chip8 rom to emulate"))
+        .arg(Arg::with_name("debug")
+            .default_value("false")
+            .short("d")
+            .long("debug")
+            .possible_values(&["true", "false"])
+            .help("Whether to run in debug mode - print CPU state to console every tick"))
+        .get_matches();
+
+    let rom = matches.value_of("rom").unwrap();
+    let debug: bool = matches.value_of("debug").unwrap().parse().unwrap();
+    (String::from(rom), debug)
 }
 
 fn read_program(file_name: &String) -> Vec<u8> {
@@ -34,10 +46,9 @@ fn read_program(file_name: &String) -> Vec<u8> {
 }
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let file_name: &String = parse_args(&args);
-    let program = read_program(file_name);
+    let (rom, debug) = parse_args();
+    let program = read_program(&rom);
     let mut emulator = Emulator::new();
     emulator.load_program(program);
-    emulator.run();
+    emulator.run(debug);
 }

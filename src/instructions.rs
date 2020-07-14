@@ -3,9 +3,7 @@ extern crate gl;
 use rand::Rng;
 
 use crate::cpu::Cpu;
-use crate::display::Display;
 use crate::utils::opcode::Opcode;
-use crate::utils::bytes;
 
 pub fn get_opcode_func(opcode: &Opcode) -> fn(&mut Cpu, Opcode) {
     match (opcode.opcode & 0xf000) >> 12 {
@@ -158,11 +156,9 @@ fn op_8xy4(cpu: &mut Cpu, opcode: Opcode) {
     cpu.set_v(opcode.x, vx);
     cpu.set_v(Cpu::VF, vf as u8);
     cpu.advance_pc();
-    
 }
 
 fn op_8xy5(cpu: &mut Cpu, opcode: Opcode) {
-    // let (vx, vf) = cpu.get_v(opcode.x).overflowing_sub(cpu.get_v(opcode.y));
     cpu.set_v(Cpu::VF, if cpu.get_v(opcode.x) > cpu.get_v(opcode.y) { 1 } else { 0 });
     cpu.set_v(opcode.x, cpu.get_v(opcode.x).wrapping_sub(cpu.get_v(opcode.y)));
     cpu.advance_pc();
@@ -209,17 +205,13 @@ fn op_cxnn(cpu: &mut Cpu, opcode: Opcode) {
 }
 
 fn op_dxyn(cpu: &mut Cpu, opcode: Opcode) {
-    let (x, mut y) = (cpu.get_v(opcode.x), cpu.get_v(opcode.y));
-
-    for i in cpu.i..cpu.i + opcode.n as u16 {
-        let mut byte = cpu.ram[i as usize];
+    let (x, y) = (cpu.get_v(opcode.x), cpu.get_v(opcode.y));
+    cpu.registers[Cpu::VF as usize] = 0;
+    for i in 0..opcode.n as u8 {
+        let byte = cpu.ram[(cpu.i + i as u16) as usize];
         for j in 0..8 {
-            if ((x + j) as usize) < Display::WIDTH {
-                cpu.registers[Cpu::VF as usize] |= cpu.display.draw_pixel(x + j, y, bytes::get_u8_msb(byte));
-            }
-            byte = byte << 1;
+            cpu.registers[Cpu::VF as usize] |= cpu.display.draw_pixel(x + j, y + i, (byte >> (7 - j)) & 1);
         }
-        y += 1;
     }
     cpu.advance_pc();
 }
@@ -292,7 +284,7 @@ fn op_fx55(cpu: &mut Cpu, opcode: Opcode) {
 
 fn op_fx65(cpu: &mut Cpu, opcode: Opcode) {
     for i in 0..opcode.x + 1 {
-        cpu.set_v(opcode.x, cpu.ram[(cpu.i + (i as u16)) as usize]);
+        cpu.set_v(i, cpu.ram[(cpu.i + (i as u16)) as usize]);
     }
     cpu.advance_pc();
 }
